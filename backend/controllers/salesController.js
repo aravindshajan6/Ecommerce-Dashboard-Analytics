@@ -1,29 +1,265 @@
 import { conn } from "../DB/dbConnection.js";
 
-// daily-sales
-export const dailySales = async (req, res) => {
-  console.log("inside get dailySales Fn");
+// //Total sales over time
+// // daily-sales
+// export const dailySales = async (req, res) => {
+//   console.log("inside get dailySales Fn");
+
+//   try {
+//     if (!conn) {
+//       return res.status(500).json({
+//         success: false,
+//         message: "Database connection not established!",
+//       });
+//     }
+
+//     const db = conn.connection.db;
+
+//     const sales = await db
+//       .collection("shopifyOrders")
+//       .aggregate([
+//         {
+//           $addFields: {
+//             created_at_date: {
+//               $dateFromString: { dateString: "$created_at" },
+//             },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: {
+//               $dateToString: { format: "%Y-%m-%d", date: "$created_at_date" },
+//             },
+//             totalSales: {
+//               $sum: { $toDouble: "$total_price_set.shop_money.amount" },
+//             },
+//           },
+//         },
+//         {
+//           $sort: { _id: 1 }, // Sort by date
+//         },
+//       ])
+//       .toArray();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Daily sales data fetched from DB",
+//       dailySales: sales,
+//     });
+//   } catch (error) {
+//     console.error("Error in dailySales:", error.message);
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
+
+// //monthly-sales
+// export const monthlySales = async (req, res) => {
+//   console.log("inside get monthlySales Fn");
+
+//   try {
+//     if (!conn) {
+//       return res.status(500).json({
+//         success: false,
+//         message: "Database connection not established!",
+//       });
+//     }
+
+//     const db = conn.connection.db;
+
+//     const sales = await db
+//       .collection("shopifyOrders")
+//       .aggregate([
+//         {
+//           $addFields: {
+//             created_at_date: {
+//               $dateFromString: { dateString: "$created_at" },
+//             },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: {
+//               $dateToString: { format: "%Y-%m", date: "$created_at_date" },
+//             },
+//             totalSales: {
+//               $sum: { $toDouble: "$total_price_set.shop_money.amount" },
+//             },
+//           },
+//         },
+//         {
+//           $sort: { _id: 1 }, // Sort by year and month
+//         },
+//       ])
+//       .toArray();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Monthly sales data fetched from DB",
+//       monthlySales: sales,
+//     });
+//   } catch (error) {
+//     console.error("Error in monthlySales:", error.message);
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
+
+// //quarterly-sales
+// export const quarterlySales = async (req, res) => {
+//   console.log("inside get quarterlySales Fn");
+
+//   try {
+//     if (!conn) {
+//       return res.status(500).json({
+//         success: false,
+//         message: "Database connection not established!",
+//       });
+//     }
+
+//     const db = conn.connection.db;
+
+//     const sales = await db
+//       .collection("shopifyOrders")
+//       .aggregate([
+//         {
+//           $addFields: {
+//             created_at_date: {
+//               $dateFromString: { dateString: "$created_at" },
+//             },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: {
+//               year: { $year: "$created_at_date" },
+//               quarter: {
+//                 $ceil: { $divide: [{ $month: "$created_at_date" }, 3] },
+//               },
+//             },
+//             totalSales: {
+//               $sum: { $toDouble: "$total_price_set.shop_money.amount" },
+//             },
+//           },
+//         },
+//         {
+//           $sort: { "_id.year": 1, "_id.quarter": 1 }, // Sort by year and quarter
+//         },
+//       ])
+//       .toArray();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Quarterly sales data fetched from DB",
+//       quarterlySales: sales,
+//     });
+//   } catch (error) {
+//     console.error("Error in quarterlySales:", error.message);
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
+
+// //yearly sales
+// export const yearlySales = async (req, res) => {
+//   console.log("inside get yearlySales Fn");
+
+//   try {
+//     if (!conn) {
+//       return res.status(500).json({
+//         success: false,
+//         message: "Database connection not established!",
+//       });
+//     }
+
+//     const db = conn.connection.db;
+
+//     const sales = await db
+//       .collection("shopifyOrders")
+//       .aggregate([
+//         {
+//           $addFields: {
+//             created_at_date: {
+//               $dateFromString: { dateString: "$created_at" },
+//             },
+//           },
+//         },
+//         {
+//           $group: {
+//             _id: { $year: "$created_at_date" },
+//             totalSales: {
+//               $sum: { $toDouble: "$total_price_set.shop_money.amount" },
+//             },
+//           },
+//         },
+//         {
+//           $sort: { _id: 1 }, // Sort by year
+//         },
+//       ])
+//       .toArray();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Yearly sales data fetched from DB",
+//       yearlySales: sales,
+//     });
+//   } catch (error) {
+//     console.error("Error in yearlySales:", error.message);
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
+
+
+// Function to get total sales amount
+export const getTotalSalesAmount = async (req, res) => {
+  console.log("inside getTotalSalesAmount Fn");
 
   try {
-    if (!conn) {
-      return res.status(500).json({
-        success: false,
-        message: "Database connection not established!",
-      });
+    if(!conn) {
+      console.log("DB connection failed!");
     }
 
-    const db = conn.connection.db;
-
-    const sales = await db
-      .collection("shopifyOrders")
+    const totalSales = await conn.connection.db.collection("shopifyOrders")
       .aggregate([
+        { $addFields: { created_at_date: { $dateFromString: { dateString: "$created_at" } } } },
         {
-          $addFields: {
-            created_at_date: {
-              $dateFromString: { dateString: "$created_at" },
-            },
-          },
+          $group: {
+            _id: null,
+            totalSalesAmount: { $sum: { $toDouble: "$total_price_set.shop_money.amount" } }
+          }
+        }
+      ])
+      .toArray();
+
+    const totalSalesAmount = totalSales.length > 0 ? totalSales[0].totalSalesAmount : 0;
+
+    res.status(200).json({
+      success: true,
+      message: "Total sales amount fetched successfully",
+      totalSalesAmount: totalSalesAmount
+    });
+  } catch (error) {
+    console.error("Error in getTotalSalesAmount:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getSalesData = async (req, res) => {
+  console.log("inside getSalesData Fn");
+
+  const { interval } = req.query; // Extract the interval from the query parameter
+
+  // Define the aggregation pipeline based on the interval
+  let pipeline = [
+    {
+      $addFields: {
+        created_at_date: {
+          $dateFromString: { dateString: "$created_at" },
         },
+      },
+    },
+  ];
+
+  switch (interval) {
+    case "daily":
+      pipeline.push(
         {
           $group: {
             _id: {
@@ -36,45 +272,12 @@ export const dailySales = async (req, res) => {
         },
         {
           $sort: { _id: 1 }, // Sort by date
-        },
-      ])
-      .toArray();
+        }
+      );
+      break;
 
-    res.status(200).json({
-      success: true,
-      message: "Daily sales data fetched from DB",
-      dailySales: sales,
-    });
-  } catch (error) {
-    console.error("Error in dailySales:", error.message);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-//monthly-sales
-export const monthlySales = async (req, res) => {
-  console.log("inside get monthlySales Fn");
-
-  try {
-    if (!conn) {
-      return res.status(500).json({
-        success: false,
-        message: "Database connection not established!",
-      });
-    }
-
-    const db = conn.connection.db;
-
-    const sales = await db
-      .collection("shopifyOrders")
-      .aggregate([
-        {
-          $addFields: {
-            created_at_date: {
-              $dateFromString: { dateString: "$created_at" },
-            },
-          },
-        },
+    case "monthly":
+      pipeline.push(
         {
           $group: {
             _id: {
@@ -87,45 +290,12 @@ export const monthlySales = async (req, res) => {
         },
         {
           $sort: { _id: 1 }, // Sort by year and month
-        },
-      ])
-      .toArray();
+        }
+      );
+      break;
 
-    res.status(200).json({
-      success: true,
-      message: "Monthly sales data fetched from DB",
-      monthlySales: sales,
-    });
-  } catch (error) {
-    console.error("Error in monthlySales:", error.message);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-//quarterly-sales
-export const quarterlySales = async (req, res) => {
-  console.log("inside get quarterlySales Fn");
-
-  try {
-    if (!conn) {
-      return res.status(500).json({
-        success: false,
-        message: "Database connection not established!",
-      });
-    }
-
-    const db = conn.connection.db;
-
-    const sales = await db
-      .collection("shopifyOrders")
-      .aggregate([
-        {
-          $addFields: {
-            created_at_date: {
-              $dateFromString: { dateString: "$created_at" },
-            },
-          },
-        },
+    case "quarterly":
+      pipeline.push(
         {
           $group: {
             _id: {
@@ -141,24 +311,32 @@ export const quarterlySales = async (req, res) => {
         },
         {
           $sort: { "_id.year": 1, "_id.quarter": 1 }, // Sort by year and quarter
+        }
+      );
+      break;
+
+    case "yearly":
+      pipeline.push(
+        {
+          $group: {
+            _id: { $year: "$created_at_date" },
+            totalSales: {
+              $sum: { $toDouble: "$total_price_set.shop_money.amount" },
+            },
+          },
         },
-      ])
-      .toArray();
+        {
+          $sort: { _id: 1 }, // Sort by year
+        }
+      );
+      break;
 
-    res.status(200).json({
-      success: true,
-      message: "Quarterly sales data fetched from DB",
-      quarterlySales: sales,
-    });
-  } catch (error) {
-    console.error("Error in quarterlySales:", error.message);
-    res.status(500).json({ success: false, message: error.message });
+    default:
+      return res.status(400).json({
+        success: false,
+        message: "Invalid interval provided!",
+      });
   }
-};
-
-//yearly sales
-export const yearlySales = async (req, res) => {
-  console.log("inside get yearlySales Fn");
 
   try {
     if (!conn) {
@@ -170,37 +348,15 @@ export const yearlySales = async (req, res) => {
 
     const db = conn.connection.db;
 
-    const sales = await db
-      .collection("shopifyOrders")
-      .aggregate([
-        {
-          $addFields: {
-            created_at_date: {
-              $dateFromString: { dateString: "$created_at" },
-            },
-          },
-        },
-        {
-          $group: {
-            _id: { $year: "$created_at_date" },
-            totalSales: {
-              $sum: { $toDouble: "$total_price_set.shop_money.amount" },
-            },
-          },
-        },
-        {
-          $sort: { _id: 1 }, // Sort by year
-        },
-      ])
-      .toArray();
+    const sales = await db.collection("shopifyOrders").aggregate(pipeline).toArray();
 
     res.status(200).json({
       success: true,
-      message: "Yearly sales data fetched from DB",
-      yearlySales: sales,
+      message: `${interval.charAt(0).toUpperCase() + interval.slice(1)} sales data fetched from DB`,
+      [`${interval}Sales`]: sales,
     });
   } catch (error) {
-    console.error("Error in yearlySales:", error.message);
+    console.error(`Error in getSalesData for ${interval}:`, error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };

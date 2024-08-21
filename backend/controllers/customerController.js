@@ -26,137 +26,6 @@ export const getAllCustomers = async (req, res) => {
   }
 };
 
-//new customers per month
-export const monthlyNewCustomers = async (req, res) => {
-  console.log("inside monthlyNewCustomers Fn");
-  try {
-    if (!conn) {
-      console.log("no DB connection!");
-    }
-    const db = conn.connection.db;
-
-    const newCustomers = await db
-      .collection("shopifyCustomers")
-      .aggregate([
-        {
-          $addFields: {
-            created_at_date: {
-              $dateFromString: { dateString: "$created_at" },
-            },
-          },
-        },
-        {
-          $group: {
-            _id: {
-              $dateToString: { format: "%Y-%m", date: "$created_at_date" },
-            },
-            newCustomers: { $sum: 1 },
-          },
-        },
-        {
-          $sort: { _id: 1 }, // Sort by month
-        },
-      ])
-      .toArray();
-
-    res.status(200).json({
-      success: true,
-      message: "Monthly new customers data fetched from DB",
-      monthlyNewCustomers: newCustomers,
-    });
-  } catch (error) {
-    console.error("Error in monthlyNewCustomers:", error.message);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-//new customers per day
-export const dailyNewCustomers = async (req, res) => {
-  console.log("inside dailyNewCustomers Fn");
-  try {
-    if (!conn) {
-      console.log("no DB connection!");
-    }
-    const db = conn.connection.db;
-
-    const newCustomers = await db
-      .collection("shopifyCustomers")
-      .aggregate([
-        {
-          $addFields: {
-            created_at_date: {
-              $dateFromString: { dateString: "$created_at" },
-            },
-          },
-        },
-        {
-          $group: {
-            _id: {
-              $dateToString: { format: "%Y-%m-%d", date: "$created_at_date" },
-            },
-            newCustomers: { $sum: 1 },
-          },
-        },
-        {
-          $sort: { _id: 1 }, // Sort by month
-        },
-      ])
-      .toArray();
-
-    res.status(200).json({
-      success: true,
-      message: "Daily new customers data fetched from DB",
-      dailyNewCustomers: newCustomers,
-    });
-  } catch (error) {
-    console.error("Error in monthlyNewCustomers:", error.message);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-//new customers per year
-export const yearlyNewCustomers = async (req, res) => {
-  console.log("inside yearlyNewCustomers Fn");
-  try {
-    if (!conn) {
-      console.log("no DB connection!");
-    }
-    const db = conn.connection.db;
-
-    const newCustomers = await db
-      .collection("shopifyCustomers")
-      .aggregate([
-        {
-          $addFields: {
-            created_at_date: {
-              $dateFromString: { dateString: "$created_at" },
-            },
-          },
-        },
-        {
-          $group: {
-            _id: { $dateToString: { format: "%Y", date: "$created_at_date" } },
-            newCustomers: { $sum: 1 },
-          },
-        },
-        {
-          $sort: { _id: 1 }, // Sort by month
-        },
-      ])
-      .toArray();
-
-    res.status(200).json({
-      success: true,
-      message: "Yearly new customers data fetched from DB",
-      yearlyNewCustomers: newCustomers,
-    });
-  } catch (error) {
-    console.error("Error in yearlyNewCustomers:", error.message);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-//customer geographical distribution
 export const geographicalDistribution = async (req, res) => {
   console.log("inside geographicalDistribution Fn");
   try {
@@ -260,7 +129,7 @@ export const clvByCohorts = async (req, res) => {
         },
         {
           $lookup: {
-            from: "shopifyOrders", // Use the same collection
+            from: "shopifyOrders",
             let: { customerId: "$_id" },
             pipeline: [
               {
@@ -299,6 +168,7 @@ export const clvByCohorts = async (req, res) => {
           $group: {
             _id: "$cohortMonth",
             totalCLV: { $sum: "$totalRevenue" },
+            numberOfCustomers: { $count: {} }, // Count number of customers
           },
         },
         {
@@ -317,3 +187,275 @@ export const clvByCohorts = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// New Customers Added Over Time
+export const newCustomersAdded = async (req, res) => {
+  try {
+    if (!conn) {
+      return res.status(500).json({
+        success: false,
+        message: "Database connection not established!",
+      });
+    }
+
+    const db = conn.connection.db;
+    const { interval } = req.query; // daily, monthly, quarterly, or yearly
+
+    let groupBy;
+    switch (interval) {
+      case 'daily':
+        groupBy = {
+          $dateToString: { format: "%Y-%m-%d", date: { $toDate: "$created_at" } }
+        };
+        break;
+      case 'monthly':
+        groupBy = {
+          $dateToString: { format: "%Y-%m", date: { $toDate: "$created_at" } }
+        };
+        break;
+      case 'quarterly':
+        groupBy = {
+          year: { $year: { $toDate: "$created_at" } },
+          quarter: { $ceil: { $divide: [{ $month: { $toDate: "$created_at" } }, 3] } }
+        };
+        break;
+      case 'yearly':
+      default:
+        groupBy = {
+          $dateToString: { format: "%Y", date: { $toDate: "$created_at" } }
+        };
+        break;
+    }
+
+    const newCustomers = await db.collection("shopifyCustomers").aggregate([
+      {
+        $group: {
+          _id: groupBy,
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id": 1 } },
+    ]).toArray();
+
+    res.status(200).json({
+      success: true,
+      message: "New customers data fetched from DB",
+      newCustomers,
+    });
+  } catch (error) {
+    console.error("Error in newCustomersAdded:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+//repeat customers over interval
+// export const getRepeatCustomers = async (req, res) => {
+//   console.log("inside getRepeatCustomers Fn")
+//   try {
+//     if (!conn) {
+//       return res.status(500).json({
+//         success: false,
+//         message: "Database connection not established!",
+//       });
+//     }
+
+//     const db = conn.connection.db;
+//     const { interval } = req.query; // daily, monthly, quarterly, or yearly
+//     console.log(interval)
+//     let groupBy;
+//     switch (interval) {
+//       case 'daily':
+//         groupBy = {
+//           $dateToString: { format: "%Y-%m-%d", date: { $toDate: { $concat: [ "$created_at", "Z" ] } } }
+//         };
+//         break;
+//       case 'monthly':
+//         groupBy = {
+//           $dateToString: { format: "%Y-%m", date: { $toDate: { $concat: [ "$created_at", "Z" ] } } }
+//         };
+//         break;
+//       case 'quarterly':
+//         groupBy = {
+//           year: { $year: { $toDate: { $concat: [ "$created_at", "Z" ] } } },
+//           quarter: { $ceil: { $divide: [{ $month: { $toDate: { $concat: [ "$created_at", "Z" ] } } }, 3] } }
+//         };
+//         break;
+//       case 'yearly':
+//       default:
+//         groupBy = {
+//           $dateToString: { format: "%Y", date: { $toDate: { $concat: [ "$created_at", "Z" ] } } }
+//         };
+//         break;
+//     }
+
+//     const repeatCustomers = await db.collection("shopifyOrders").aggregate([
+//       {
+//         $group: {
+//           _id: "$customer_id",
+//           orderCount: { $sum: 1 },
+//           firstOrderDate: { $min: "$created_at" },
+//           lastOrderDate: { $max: "$created_at" }
+//         }
+//       },
+//       {
+//         $match: { orderCount: { $gt: 1 } }
+//       },
+//       {
+//         $lookup: {
+//           from: "shopifyCustomers",
+//           localField: "_id",
+//           foreignField: "id",
+//           as: "customerDetails"
+//         }
+//       },
+//       {
+//         $unwind: "$customerDetails"
+//       },
+//       {
+//         $project: {
+//           _id: 0,
+//           customerId: "$_id",
+//           orderCount: 1,
+//           firstOrderDate: 1,
+//           lastOrderDate: 1,
+//           customerName: { $concat: ["$customerDetails.first_name", " ", "$customerDetails.last_name"] },
+//           customerEmail: "$customerDetails.email",
+//           customerCity: "$customerDetails.default_address.city"
+//         }
+//       },
+//       {
+//         $group: {
+//           _id: groupBy,
+//           repeatCustomers: { $push: "$$ROOT" }
+//         }
+//       },
+//       { $sort: { "_id": 1 } },
+//     ]).toArray();
+
+//     console.log("repeat customers data : ", repeatCustomers);
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Repeat customers data fetched from DB",
+//       repeatCustomers,
+//     });
+//   } catch (error) {
+//     console.error("Error in getRepeatCustomers:", error.message);
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// };
+
+export const getRepeatCustomers = async (req, res) => {
+  console.log("inside getRepeatCustomers Fn");
+  try {
+    if (!conn) {
+      return res.status(500).json({
+        success: false,
+        message: "Database connection not established!",
+      });
+    }
+
+    const db = conn.connection.db;
+    const { interval } = req.query; // daily, monthly, quarterly, or yearly
+    console.log(interval);
+
+    let groupBy;
+    switch (interval) {
+      case 'daily':
+        groupBy = {
+          $dateToString: { format: "%Y-%m-%d", date: "$created_at_date" }
+        };
+        break;
+      case 'monthly':
+        groupBy = {
+          $dateToString: { format: "%Y-%m", date: "$created_at_date" }
+        };
+        break;
+      case 'quarterly':
+        groupBy = {
+          year: { $year: "$created_at_date" },
+          quarter: {
+            $cond: [
+              { $lte: [{ $month: "$created_at_date" }, 3] }, 1,
+              { $cond: [
+                { $lte: [{ $month: "$created_at_date" }, 6] }, 2,
+                { $cond: [
+                  { $lte: [{ $month: "$created_at_date" }, 9] }, 3, 4
+                ]}
+              ]}
+            ]
+          }
+        };
+        break;
+      case 'yearly':
+      default:
+        groupBy = {
+          $dateToString: { format: "%Y", date: "$created_at_date" }
+        };
+        break;
+    }
+
+    const repeatCustomers = await db.collection("shopifyOrders").aggregate([
+      {
+        $addFields: {
+          created_at_date: { $dateFromString: { dateString: "$created_at" } }
+        }
+      },
+      {
+        $group: {
+          _id: "$customer_id",
+          orderCount: { $sum: 1 }
+        }
+      },
+      {
+        $match: { orderCount: { $gt: 1 } }
+      },
+      {
+        $lookup: {
+          from: "shopifyOrders",
+          localField: "_id",
+          foreignField: "customer_id",
+          as: "orders"
+        }
+      },
+      {
+        $unwind: {
+          path: "$orders",
+          preserveNullAndEmptyArrays: false
+        }
+      },
+      {
+        $addFields: {
+          created_at_date: { $dateFromString: { dateString: "$orders.created_at" } }
+        }
+      },
+      {
+        $group: {
+          _id: groupBy,
+          repeatCustomerCount: { $sum: 1 }
+        }
+      },
+      { $sort: { "_id": 1 } }
+    ]).toArray();
+
+    // console.log("repeat customer counts data : ", repeatCustomers);
+
+    res.status(200).json({
+      success: true,
+      message: "Repeat customer counts data fetched from DB",
+      repeatCustomers,
+    });
+  } catch (error) {
+    console.error("Error in getRepeatCustomers:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
+
+
+
+
+
+

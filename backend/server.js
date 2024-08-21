@@ -4,9 +4,11 @@ import { dbConnection } from "./DB/dbConnection.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import salesRoutes from "./routes/salesRoutes.js";
+import cors from 'cors';
 
 const app = express();
 dotenv.config();
+app.use(cors());
 
 dbConnection();
 

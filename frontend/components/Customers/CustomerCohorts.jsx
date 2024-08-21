@@ -1,0 +1,88 @@
+// src/components/CustomerLifetimeValueChart.jsx
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Line } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend } from "chart.js";
+
+// Register chart components
+ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
+
+const CustomerCohorts = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCLVData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3010/api/customers/clvByCohorts");
+        if (response.data.success) {
+          setData(response.data.clvByCohorts);
+          console.log(response.data.clvByCohorts);
+        } else {
+          console.error("Failed to fetch CLV data");
+        }
+      } catch (error) {
+        console.error("Error fetching CLV data:", error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCLVData();
+  }, []);
+
+  // Prepare data for the chart
+  const chartData = {
+    labels: data.map(item => item._id), // Cohort months
+    datasets: [
+      {
+        label: "Total CLV",
+        data: data.map(item => item.totalCLV),
+        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        fill: true,
+      },
+      {
+        label: "Number of Customers",
+        data: data.map(item => item.numberOfCustomers),
+        borderColor: "rgba(153, 102, 255, 1)",
+        backgroundColor: "rgba(153, 102, 255, 0.2)",
+        fill: true,
+      }
+    ],
+  };
+
+  // Chart options
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) {
+              label += ': ';
+            }
+            if (context.parsed.y !== null) {
+              label += new Intl.NumberFormat().format(context.parsed.y);
+            }
+            return label;
+          }
+        }
+      }
+    }
+  };
+
+  return (
+    <div>
+      <h2>Customer Lifetime Value by Cohorts</h2>
+      {loading ? <p>Loading...</p> : <Line data={chartData} options={options} />}
+    </div>
+  );
+};
+
+export default CustomerCohorts;
