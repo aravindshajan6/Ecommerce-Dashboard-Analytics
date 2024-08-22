@@ -10,6 +10,7 @@ import Sales from "../components/Sales/Sales.jsx";
 import Navbar from "../components/Navbar/Navbar.jsx";
 import Customers from "../components/Customers/Customers.jsx";
 import VerticalSidebar from "../components/Navbar/VerticalSidebar.jsx";
+import Overview from "../components/Overview/Overview.jsx";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function AppContent() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Hero />} />
+          <Route path="/overview" element={<Overview />} />
           <Route path="/sales" element={<Sales />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="*" element={<Hero />} />

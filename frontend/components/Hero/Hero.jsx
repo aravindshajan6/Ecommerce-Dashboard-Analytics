@@ -15,7 +15,7 @@ const LandingPage = () => {
           </p>
           <div className="mt-8">
             <a
-              href="/sales"
+              href="/overview"
               className="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600"
             >
               Go to Dashboard

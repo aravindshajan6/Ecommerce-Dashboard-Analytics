@@ -9,7 +9,7 @@ const Customers = () => {
   return (
     <div>
       <main>
-        <Overview className="w-full" />
+        {/* <Overview className="w-full" /> */}
         <div className="container flex flex-col justify-center items-center w-full bg-[#213349]">
           <div className="sub-container w-[80%] h-[70%] bg-[#213349]">
             <div className="flex-1 p-4 ">
