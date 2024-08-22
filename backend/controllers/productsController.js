@@ -7,16 +7,15 @@ export const getTotalProducts = async (req, res) => {
       console.log("no connection with MongoDB");
     }
 
-    const db = conn.connection.db; // Access the database object
-    const collection = db.collection("shopifyProducts"); // Use your collection name
+    const db = conn.connection.db; 
+    const collection = db.collection("shopifyProducts"); 
 
-    // Get the total number of orders
+
     const totalProducts = await collection.countDocuments();
 
-    // const orders = await collection.find({}).toArray();
     res.status(200).json({
       success: true,
-      message: "products info fetched from DB",
+      message: "products count fetched from DB",
       totalProducts: totalProducts,
     });
   } catch (error) {

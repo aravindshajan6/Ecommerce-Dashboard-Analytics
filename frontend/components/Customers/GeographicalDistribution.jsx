@@ -49,6 +49,7 @@ const GeographicalDistribution = () => {
     fetchCoordinates();
   }, [geographicalData]);
 
+  //using Geocoding API
   const getCoordinates = async (city) => {
     const apiKey = import.meta.env.VITE_OPENCAGE_API_KEY;
     //Replace with your geocoding API key
@@ -64,7 +65,7 @@ const GeographicalDistribution = () => {
       return { lat, lng };
     } else {
       console.error(`No results for city: ${city}`);
-      return { lat: 0, lng: 0 }; // Default values for error handling
+      return { lat: 0, lng: 0 }; // Default values 
     }
   };
 

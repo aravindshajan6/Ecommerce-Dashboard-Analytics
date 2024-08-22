@@ -23,9 +23,9 @@ import {
 
 
 const CustomersAdded = () => {
-  const [data, setData] = useState([]); //for data from sales
+  const [data, setData] = useState([]); 
 
-  const [interval, setInterval] = useState("monthly"); //  interval for sales data
+  const [interval, setInterval] = useState("monthly"); 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -34,7 +34,6 @@ const CustomersAdded = () => {
     const fetchCustomerData = async () => {
       try {
         const response = await axios.get(
-          //   `http://localhost:3010/api/sales/${interval}Sales`
           `http://localhost:3010/api/customers/newCustomersAdded?interval=${interval}`
         );
         if (response.data.success === true) {
@@ -59,13 +58,13 @@ const CustomersAdded = () => {
   const handleIntervalChange = (event) => {
     setInterval(event.target.value);
     console.log("interval changed , : ", event.target.value);
-    setLoading(true); // Set loading true to show loading indicator during fetch
+    setLoading(true); 
   };
 
   // New Customers Chart
   const NewCustomers = () => {
     const chartData = {
-      labels: data.map((item) => item._id), // Assuming _id is the date string
+      labels: data.map((item) => item._id), 
       datasets: [
         {
           label: `New ${interval} Customers`,
@@ -79,7 +78,6 @@ const CustomersAdded = () => {
     return <Line data={chartData} />;
   };
 
-  // Customer Analytics Component
   const CustomerAnalytics = () => (
     <section id="sales" className="py-8 bg-gray-100 rounded-lg">
       <div className="container mx-auto px-6">
@@ -90,7 +88,6 @@ const CustomersAdded = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             New customers over time
           </h3>
-          {/* Select component */}
           <div className="mb-4">
             <label
               htmlFor="interval"

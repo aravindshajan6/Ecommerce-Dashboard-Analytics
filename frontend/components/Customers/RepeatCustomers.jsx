@@ -22,9 +22,9 @@ ChartJS.register(
 );
 
 const RepeatCustomers = () => {
-  const [data, setData] = useState([]); //for data from sales
+  const [data, setData] = useState([]);
 
-  const [interval, setInterval] = useState("monthly"); //  interval for sales data
+  const [interval, setInterval] = useState("monthly"); 
 
   useEffect(() => {
     console.log("fetch repeat customer data useEffect running");
@@ -67,7 +67,7 @@ const RepeatCustomers = () => {
           if (interval === 'quarterly') {
             return `Q${item._id.quarter} ${item._id.year}`;
           } else {
-            return item._id; // Adjust as needed for other intervals
+            return item._id; 
           }
         }),
         datasets: [
@@ -91,7 +91,6 @@ const RepeatCustomers = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Repeat Customers over time
           </h3>
-          {/* Select component */}
           <div className="mb-4">
             <label
               htmlFor="interval"

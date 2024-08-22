@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react"; // Capitalize 'React'
+import React, { useEffect, useState } from "react"; 
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,7 +8,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  PointElement, // Import PointElement
+  PointElement, 
 } from "chart.js";
 
 // Register chart components
@@ -16,14 +16,13 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   LineElement,
-  PointElement, // Register PointElement
+  PointElement, 
   Title,
   Tooltip,
   Legend
 );
 
 
-// Overview Component
 const Overview = () => {
   const [totalSalesAmount, setTotalSalesAmount] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
@@ -97,7 +96,6 @@ const Overview = () => {
 
   }, []);
 
-  // Return the JSX for rendering
   return (
     <section id="overview" className="py-8 bg-[#213349]" >
       <div className="container mx-auto px-6">

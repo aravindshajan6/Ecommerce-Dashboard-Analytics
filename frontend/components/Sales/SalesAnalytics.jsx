@@ -1,12 +1,11 @@
 import axios from "axios";
-import react, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 
 
-// Sales Analytics Component
 const SalesAnalytics = () => {
-  const [data, setData] = useState([]); //for data from sales
-  const [interval, setInterval] = useState("monthly"); //  interval for sales data
+  const [data, setData] = useState([]); 
+  const [interval, setInterval] = useState("monthly"); 
 
   useEffect(() => {
     //fetch sales data based on selected interval
@@ -33,13 +32,13 @@ const SalesAnalytics = () => {
   const handleIntervalChange = (event) => {
     setInterval(event.target.value);
     console.log("interval changed , : ", event.target.value);
-    setLoading(true); // Set loading true to show loading indicator during fetch
+    setLoading(true); 
   };
 
   // Total Sales Chart
   const TotalSalesChart = () => {
     const chartData = {
-      labels: data.map((item) => item._id), // Assuming _id is the date string
+      labels: data.map((item) => item._id), 
       datasets: [
         {
           label: `${interval} Sales`,
@@ -63,7 +62,6 @@ const SalesAnalytics = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Sales Over Time
           </h3>
-          {/* Select component */}
           <div className="mb-4">
             <label
               htmlFor="interval"

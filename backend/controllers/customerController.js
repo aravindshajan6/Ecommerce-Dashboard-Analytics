@@ -8,12 +8,8 @@ export const getCustomerCount = async (req, res) => {
       console.log("Database connection not established");
     }
 
-    const db = conn.connection.db; // Access the database object
-    const collection = db.collection("shopifyCustomers"); // Use your collection name
-
-    // Log collection name and database name
-    console.log("Collection Name: ", collection.collectionName);
-    console.log("Database Name: ", db.databaseName);
+    const db = conn.connection.db; 
+    const collection = db.collection("shopifyCustomers"); 
 
     const totalCustomers = await collection.countDocuments();
     // console.log("customers : ", customers);
@@ -35,12 +31,8 @@ export const getAllCustomers = async (req, res) => {
       throw new Error("Database connection not established");
     }
 
-    const db = conn.connection.db; // Access the database object
-    const collection = db.collection("shopifyCustomers"); // Use your collection name
-
-    // Log collection name and database name
-    console.log("Collection Name: ", collection.collectionName);
-    console.log("Database Name: ", db.databaseName);
+    const db = conn.connection.db; 
+    const collection = db.collection("shopifyCustomers"); 
 
     const customers = await collection.find({}).toArray();
     // console.log("customers : ", customers);
@@ -183,8 +175,7 @@ export const newCustomersAdded = async (req, res) => {
     }
 
     const db = conn.connection.db;
-    const { interval } = req.query; // daily, monthly, quarterly, or yearly
-
+    const { interval } = req.query; 
     let groupBy;
     switch (interval) {
       case "daily":
@@ -252,7 +243,7 @@ export const getRepeatCustomers = async (req, res) => {
     }
 
     const db = conn.connection.db;
-    const { interval } = req.query; // daily, monthly, quarterly, or yearly
+    const { interval } = req.query; 
     console.log(interval);
 
     let groupBy;

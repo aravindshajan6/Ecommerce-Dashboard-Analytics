@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
 
-// Yearly Sales Growth Component
 const YearlySalesGrowth = () => {
   const [yearlySalesGrowthData, setYearlySalesGrowthData] = useState([]);
 

@@ -28,7 +28,7 @@ const Navbar = () => {
         </li>
       </ul>
     </nav>
-  );
+  ); 
 };
 
 export default Navbar;
