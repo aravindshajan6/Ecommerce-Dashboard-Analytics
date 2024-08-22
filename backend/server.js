@@ -4,19 +4,21 @@ import { dbConnection } from "./DB/dbConnection.js";
 import customerRoutes from "./routes/customerRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import salesRoutes from "./routes/salesRoutes.js";
-import cors from 'cors';
+import cors from "cors";
 import productsRoutes from "./routes/productRoutes.js";
 
 const app = express();
-dotenv.config();
 
 const corsOptions = {
-  origin: ['https://ecommerce-dashboard-a3ap.onrender.com', 'http://localhost:3000'], 
+  // origin: ['https://ecommerce-dashboard-a3ap.onrender.com', 'http://localhost:3000'],
+  origin: '*',
   optionsSuccessStatus: 200
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
 
+dotenv.config();
 dbConnection();
 
 app.get("/", (req, res) => {

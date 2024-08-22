@@ -35,6 +35,7 @@ const Overview = () => {
 
   useEffect(() => {
     // Fetch total sales amount
+    console.log("backedn url ################ : ", backend_url);
     const fetchTotalSalesAmount = async () => {
       try {
         const response = await axios.get(

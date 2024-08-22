@@ -14,12 +14,12 @@ const LandingPage = () => {
             powerful tools.
           </p>
           <div className="mt-8">
-            <a
-              href="/overview"
+            <Link
+              to="/overview"
               className="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600"
             >
               Go to Dashboard
-            </a>
+            </Link>
           </div>
         </div>
       </header>
