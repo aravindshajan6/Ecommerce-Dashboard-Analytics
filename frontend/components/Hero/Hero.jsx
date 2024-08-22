@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-white shadow">
+    <div className="min-h-screen bg-[#213349] ">
+      <header className="bg-gray-400 shadow">
         <div className="container mx-auto px-6 py-16 text-center">
           <h1 className="text-4xl font-bold text-gray-800">
             Welcome to Your Dashboard
@@ -26,8 +26,8 @@ const LandingPage = () => {
 
       <section id="features" className="py-16">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-semibold text-gray-800">Features</h2>
-          <p className="mt-4 text-gray-600">
+          <h2 className="text-3xl font-semibold text-gray-200">Features</h2>
+          <p className="mt-4 text-gray-300">
             Explore the powerful features we offer to manage and analyze your
             data.
           </p>
@@ -36,8 +36,8 @@ const LandingPage = () => {
               <Link to="/sales">
                 <div className="rounded-lg shadow p-6 bg-black hover:bg-gray-900 hover:scale-110 transition-transform duration-300">
                   <h3 className="text-xl font-semibold text-white">Sales</h3>
-                  <p className="mt-2 text-gray-400">
-                    Detailed description of the feature and its benefits.
+                  <p className="mt-2 text-gray-300">
+                    Detailed description and charts of sales.
                   </p>
                 </div>
               </Link>
@@ -49,17 +49,17 @@ const LandingPage = () => {
                     Customers
                   </h3>
                   <p className="mt-2 text-gray-400">
-                    Detailed description of the feature and its benefits.
+                    Detailed description about customers.
                   </p>
                 </div>
               </Link>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
-              <Link to="/orders">
+              <Link to="">
                 <div className="rounded-lg shadow p-6 bg-black hover:bg-gray-900 hover:scale-110 transition-transform duration-300">
                   <h3 className="text-xl font-semibold text-white">Orders</h3>
                   <p className="mt-2 text-gray-400">
-                    Detailed description of the feature and its benefits.
+                    Know all about your orders.
                   </p>
                 </div>
               </Link>
@@ -68,15 +68,15 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section id="pricing" className="bg-gray-100 py-16">
+      <section id="pricing" className="bg-[#213349] py-16">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-semibold text-gray-800">Pricing</h2>
-          <p className="mt-4 text-gray-600">
+          <h2 className="text-3xl font-semibold text-gray-200">Pricing</h2>
+          <p className="mt-4 text-gray-300">
             Choose the plan that fits your needs.
           </p>
           <div className="mt-8 flex flex-wrap justify-center">
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-gray-400 rounded-lg shadow p-6 hover:bg-white hover:scale-110 transition-transform duration-300">
                 <h3 className="text-xl font-semibold text-gray-800">Basic</h3>
                 <p className="mt-2 text-gray-600">$9/month</p>
                 <a
@@ -88,7 +88,7 @@ const LandingPage = () => {
               </div>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-gray-400 rounded-lg shadow p-6 hover:bg-white hover:scale-110 transition-transform duration-300">
                 <h3 className="text-xl font-semibold text-gray-800">Pro</h3>
                 <p className="mt-2 text-gray-600">$29/month</p>
                 <a
@@ -100,7 +100,7 @@ const LandingPage = () => {
               </div>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/3 p-4">
-              <div className="bg-white rounded-lg shadow p-6">
+              <div className="bg-gray-400 rounded-lg shadow p-6 hover:bg-white hover:scale-110 transition-transform duration-300">
                 <h3 className="text-xl font-semibold text-gray-800">
                   Enterprise
                 </h3>
@@ -123,7 +123,7 @@ const LandingPage = () => {
             © 2024 My Dashboard. All rights reserved.
           </p>
           <p className="text-gray-400 mt-2">
-            Contact us at support@mydashboard.com
+            Contact us at support@mydashboardsupport.com
           </p>
         </div>
       </footer>

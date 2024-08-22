@@ -20,6 +20,7 @@ customerRoutes.get("/getAllCustomers", getAllCustomers);
 
 customerRoutes.get("/geographicalDistribution", geographicalDistribution);
 
+
 customerRoutes.get("/clvByCohorts", clvByCohorts);
 
 

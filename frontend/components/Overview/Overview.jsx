@@ -26,6 +26,8 @@ ChartJS.register(
 // Overview Component
 const Overview = () => {
   const [totalSalesAmount, setTotalSalesAmount] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
 
   useEffect(() => {
     // Fetch total sales amount
@@ -36,21 +38,53 @@ const Overview = () => {
         );
         if (response.data.success === true) {
           setTotalSalesAmount(response.data.totalSalesAmount);
-          console.log(response.data.totalSalesAmount);
+          console.log("total sales amount", response.data.totalSalesAmount);
         }
       } catch (error) {
         console.log("Error fetching total sales amount:", error);
       }
     };
-
     fetchTotalSalesAmount();
+                                                                                                           
+    //Fetch total no of products          
+    const fetchTotalProducts = async () => {                                                                                        
+      try {
+        const response = await axios.get(
+          "http://localhost:3010/api/products/getTotalProducts"
+        );
+        if (response.data.success === true) {
+          setTotalProducts(response.data.totalProducts);
+          console.log("total products",response.data.totalProducts);
+        }
+      } catch (error) {
+        console.log("Error fetching total products amount:", error);
+      }
+    };
+    fetchTotalProducts();  
+
+    //Fetch total no of orders          
+    const fetchTotalOrders = async () => {                                                                                        
+      try {
+        const response = await axios.get(
+          "http://localhost:3010/api/orders/getTotalOrderCount"
+        );
+        if (response.data.success === true) {
+          setTotalOrders(response.data.totalOrders);
+          console.log("total orders", response.data.totalOrders);
+        }
+      } catch (error) {
+        console.log("Error fetching total sales amount:", error);
+      }
+    };
+    fetchTotalOrders();  
+
   }, []);
 
   // Return the JSX for rendering
   return (
-    <section id="overview" className="py-8">
+    <section id="overview" className="py-8 bg-[#213349]" >
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+        <h2 className="text-3xl font-semibold text-white mb-6">
           Dashboard Overview
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -59,8 +93,8 @@ const Overview = () => {
             <p className="mt-2 text-gray-600">${totalSalesAmount}</p>
           </div>
           <div className="rounded-lg shadow p-6 bg-white">
-            <h3 className="text-xl font-semibold text-gray-800">New Orders</h3>
-            <p className="mt-2 text-gray-600">150</p>
+            <h3 className="text-xl font-semibold text-gray-800">Total Orders</h3>
+            <p className="mt-2 text-gray-600"> {totalOrders} </p>
           </div>
           <div className="rounded-lg shadow p-6 bg-white">
             <h3 className="text-xl font-semibold text-gray-800">
@@ -70,7 +104,7 @@ const Overview = () => {
           </div>
           <div className="rounded-lg shadow p-6 bg-white">
             <h3 className="text-xl font-semibold text-gray-800">Inventory</h3>
-            <p className="mt-2 text-gray-600">500 Items</p>
+            <p className="mt-2 text-gray-600">{totalProducts} Items</p>
           </div>
         </div>
       </div>

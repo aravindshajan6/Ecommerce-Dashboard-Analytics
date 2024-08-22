@@ -25,12 +25,12 @@ ChartJS.register(
 const Sales = () => {
   
   return (
-    <div className="min-h-screen bg-gray-100 ">
+    <div className="min-h-screen bg-[#213349]">
       <main>
         <Overview className="w-full" />
-        <div className="container flex flex-col justify-center items-center w-full bg-gray-100">
-          <div className="sub-container w-[70%] h-[70%] bg-gray-100">
-            <div className="flex-1 p-4 ">
+        <div className="container flex flex-col justify-center items-center w-full bg-[#213349]">
+          <div className="sub-container w-[80%] h-[70%] bg-[#213349]">
+            <div className="flex-1 p-4 items-center justify-center">
               <SalesAnalytics />
             </div>
             <div className="flex-1 p-4 ">

@@ -75,7 +75,7 @@ const RepeatCustomers = () => {
             label: `Repeat ${interval} Customers`,
             data: data.map((item) => item.repeatCustomerCount),
             borderColor: "rgba(75, 192, 192, 1)",
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            backgroundColor: "rgba(75, 192, 192, 0.2)", 
           },
         ],
       };
@@ -85,11 +85,8 @@ const RepeatCustomers = () => {
 
   // Repeat Customers Component
   const RepeatCustomers = () => (
-    <section id="customers" className="py-8 bg-gray-100">
+    <section id="customers" className="py-8 px-6 bg-gray-100 rounded-lg">
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
-          Customer Analytics
-        </h2>
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Repeat Customers over time

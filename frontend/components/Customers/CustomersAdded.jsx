@@ -81,7 +81,7 @@ const CustomersAdded = () => {
 
   // Customer Analytics Component
   const CustomerAnalytics = () => (
-    <section id="sales" className="py-8 bg-gray-100">
+    <section id="sales" className="py-8 bg-gray-100 rounded-lg">
       <div className="container mx-auto px-6">
         <h2 className="text-3xl font-semibold text-gray-800 mb-6">
           Customer Analytics

@@ -52,12 +52,12 @@ const YearlySalesGrowth = () => {
   };
 
   return (
-    <section id="sales-growth" className="py-8 bg-gray-100">
-      <div className="container mx-auto px-6">
-        <h2 className="text-3xl font-semibold text-gray-800 mb-6">
+    <section id="sales-growth" className="py-8 bg-gray-100 rounded-lg max-w-[900px]  ">
+      <div className="container mx-auto px-6 ">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
           Yearly Sales Growth
         </h2>
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-6 max-w-[880px]">
           <h3 className="text-xl font-semibold text-gray-800 mb-4">
             Sales Growth Over Time 
           </h3>

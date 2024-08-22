@@ -69,7 +69,14 @@ const GeographicalDistribution = () => {
   };
 
   return (
-    <MapContainer
+    <section id="customers" className="py-8 px-6 bg-gray-100 rounded-lg">
+      <div className="container mx-auto px-6">
+        <div className="bg-white rounded-lg shadow p-6 mb-10">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            Customer Geographical Distribution
+          </h3>
+        </div>
+        <MapContainer
       center={[37.7749, -122.4194]}
       zoom={5}
       style={{ height: "500px", width: "100%" }}
@@ -88,6 +95,9 @@ const GeographicalDistribution = () => {
         ) : null
       )}
     </MapContainer>
+      </div>
+    </section>
+    
   );
 };
 
