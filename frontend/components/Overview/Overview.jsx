@@ -28,6 +28,7 @@ const Overview = () => {
   const [totalSalesAmount, setTotalSalesAmount] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [totalCustomers, setTotalCustomers] = useState(0);
 
   useEffect(() => {
     // Fetch total sales amount
@@ -73,10 +74,26 @@ const Overview = () => {
           console.log("total orders", response.data.totalOrders);
         }
       } catch (error) {
-        console.log("Error fetching total sales amount:", error);
+        console.log("Error fetching total orders amount:", error);
       }
     };
-    fetchTotalOrders();  
+    fetchTotalOrders(); 
+
+    //Fetch total no of customers          
+    const fetchTotalCustomers= async () => {                                                                                        
+      try {
+        const response = await axios.get(
+          "http://localhost:3010/api/customers/getCustomerCount"
+        );
+        if (response.data.success === true) {
+          setTotalCustomers(response.data.customerCount);
+          console.log("total orders", response.data.customerCount);
+        }
+      } catch (error) {
+        console.log("Error fetching total customer count:", error);
+      }
+    };
+    fetchTotalCustomers();  
 
   }, []);
 
@@ -98,9 +115,9 @@ const Overview = () => {
           </div>
           <div className="rounded-lg shadow p-6 bg-white">
             <h3 className="text-xl font-semibold text-gray-800">
-              New Customers
+               Customers
             </h3>
-            <p className="mt-2 text-gray-600">30</p>
+            <p className="mt-2 text-gray-600">{totalCustomers}</p>
           </div>
           <div className="rounded-lg shadow p-6 bg-white">
             <h3 className="text-xl font-semibold text-gray-800">Inventory</h3>
