@@ -5,7 +5,12 @@ import customerRoutes from "./routes/customerRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import salesRoutes from "./routes/salesRoutes.js";
 import cors from "cors";
+import path from 'path';
 import productsRoutes from "./routes/productRoutes.js";
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -16,6 +21,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'frontend/build')));
 app.use(express.json());
 
 dotenv.config();
