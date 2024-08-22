@@ -5,6 +5,9 @@ import RepeatCustomers from "./RepeatCustomers";
 import MapContainer from "./GeographicalDistribution";
 import CustomerCohorts from "./CustomerCohorts";
 
+const backend_url = import.meta.env.VITE_BACKEND_URL;
+
+
 const Customers = () => {
   return (
     <div>

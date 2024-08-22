@@ -7,7 +7,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import Overview from '../Overview/Overview'
 import YearlySalesGrowth from "./YearlySalesGrowth";
 import SalesAnalytics from "./SalesAnalytics";
 

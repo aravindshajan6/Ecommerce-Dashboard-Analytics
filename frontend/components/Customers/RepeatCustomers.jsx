@@ -21,10 +21,12 @@ ChartJS.register(
   Legend
 );
 
+const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 const RepeatCustomers = () => {
   const [data, setData] = useState([]);
 
-  const [interval, setInterval] = useState("monthly"); 
+  const [interval, setInterval] = useState("monthly");
 
   useEffect(() => {
     console.log("fetch repeat customer data useEffect running");
@@ -32,8 +34,7 @@ const RepeatCustomers = () => {
     const fetchCustomerData = async () => {
       try {
         const response = await axios.get(
-          //   `http://localhost:3010/api/sales/${interval}Sales`
-          `http://localhost:3010/api/customers/getRepeatCustomers?interval=${interval}`
+          `${backend_url}/api/customers/getRepeatCustomers?interval=${interval}`
         );
         if (response.data.success === true) {
           setData(response.data.repeatCustomers);
@@ -60,25 +61,23 @@ const RepeatCustomers = () => {
 
   // New Customers Chart
   const RepeatCustomersChart = () => {
-    
-
     const chartData = {
-        labels: data.map((item) => {
-          if (interval === 'quarterly') {
-            return `Q${item._id.quarter} ${item._id.year}`;
-          } else {
-            return item._id; 
-          }
-        }),
-        datasets: [
-          {
-            label: `Repeat ${interval} Customers`,
-            data: data.map((item) => item.repeatCustomerCount),
-            borderColor: "rgba(75, 192, 192, 1)",
-            backgroundColor: "rgba(75, 192, 192, 0.2)", 
-          },
-        ],
-      };
+      labels: data.map((item) => {
+        if (interval === "quarterly") {
+          return `Q${item._id.quarter} ${item._id.year}`;
+        } else {
+          return item._id;
+        }
+      }),
+      datasets: [
+        {
+          label: `Repeat ${interval} Customers`,
+          data: data.map((item) => item.repeatCustomerCount),
+          borderColor: "rgba(75, 192, 192, 1)",
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+        },
+      ],
+    };
 
     return <Line data={chartData} />;
   };

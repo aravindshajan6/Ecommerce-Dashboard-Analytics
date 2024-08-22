@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
@@ -22,6 +21,8 @@ ChartJS.register(
   Legend
 );
 
+const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 const CustomerCohorts = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +31,7 @@ const CustomerCohorts = () => {
     const fetchCLVData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3010/api/customers/clvByCohorts"
+          `${backend_url}/api/customers/clvByCohorts`
         );
         if (response.data.success) {
           setData(response.data.clvByCohorts);

@@ -2,30 +2,31 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-  } from "chart.js";
-  
-  // Register chart components
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-  );
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
+// Register chart components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 const CustomersAdded = () => {
-  const [data, setData] = useState([]); 
+  const [data, setData] = useState([]);
 
-  const [interval, setInterval] = useState("monthly"); 
+  const [interval, setInterval] = useState("monthly");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const CustomersAdded = () => {
     const fetchCustomerData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3010/api/customers/newCustomersAdded?interval=${interval}`
+          `${backend_url}/api/customers/newCustomersAdded?interval=${interval}`
         );
         if (response.data.success === true) {
           setData(response.data.newCustomers);
@@ -58,13 +59,13 @@ const CustomersAdded = () => {
   const handleIntervalChange = (event) => {
     setInterval(event.target.value);
     console.log("interval changed , : ", event.target.value);
-    setLoading(true); 
+    setLoading(true);
   };
 
   // New Customers Chart
   const NewCustomers = () => {
     const chartData = {
-      labels: data.map((item) => item._id), 
+      labels: data.map((item) => item._id),
       datasets: [
         {
           label: `New ${interval} Customers`,

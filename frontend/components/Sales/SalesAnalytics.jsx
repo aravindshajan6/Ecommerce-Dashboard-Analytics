@@ -1,19 +1,20 @@
 import axios from "axios";
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+
+const backend_url = import.meta.env.VITE_BACKEND_URL;
 
 
 const SalesAnalytics = () => {
-  const [data, setData] = useState([]); 
-  const [interval, setInterval] = useState("monthly"); 
+  const [data, setData] = useState([]);
+  const [interval, setInterval] = useState("monthly");
 
   useEffect(() => {
     //fetch sales data based on selected interval
     const fetchSalesData = async () => {
       try {
         const response = await axios.get(
-          //   `http://localhost:3010/api/sales/${interval}Sales`
-          `http://localhost:3010/api/sales/getSalesData?interval=${interval}`
+          `${backend_url}/api/sales/getSalesData?interval=${interval}`
         );
         if (response.data.success === true) {
           setData(response.data[`${interval}Sales`]);
@@ -32,13 +33,13 @@ const SalesAnalytics = () => {
   const handleIntervalChange = (event) => {
     setInterval(event.target.value);
     console.log("interval changed , : ", event.target.value);
-    setLoading(true); 
+    setLoading(true);
   };
 
   // Total Sales Chart
   const TotalSalesChart = () => {
     const chartData = {
-      labels: data.map((item) => item._id), 
+      labels: data.map((item) => item._id),
       datasets: [
         {
           label: `${interval} Sales`,
@@ -49,7 +50,7 @@ const SalesAnalytics = () => {
       ],
     };
 
-    return <Line data={chartData} />; 
+    return <Line data={chartData} />;
   };
 
   return (

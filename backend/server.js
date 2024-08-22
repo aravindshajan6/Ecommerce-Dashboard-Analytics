@@ -9,7 +9,13 @@ import productsRoutes from "./routes/productRoutes.js";
 
 const app = express();
 dotenv.config();
-app.use(cors());
+
+const corsOptions = {
+  origin: ['https://ecommerce-dashboard-a3ap.onrender.com', 'http://localhost:3000'], 
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 dbConnection();
 

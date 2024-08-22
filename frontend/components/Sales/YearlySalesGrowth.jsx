@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
 
+const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 const YearlySalesGrowth = () => {
   const [yearlySalesGrowthData, setYearlySalesGrowthData] = useState([]);
 
@@ -9,7 +11,8 @@ const YearlySalesGrowth = () => {
     const fetchYearlySalesGrowthData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3010/api/sales/yearlyGrowthRate"
+          `${backend_url}/api/sales/yearlyGrowthRate`
+
         );
         if (response.data.success === true) {
           setYearlySalesGrowthData(response.data.yearlySalesGrowthRate);

@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 
+const backend_url = import.meta.env.VITE_BACKEND_URL;
+
 const GeographicalDistribution = () => {
   const [geographicalData, setGeographicalData] = useState([]);
 
@@ -11,7 +13,7 @@ const GeographicalDistribution = () => {
     const fetchGeographicalData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3010/api/customers/geographicalDistribution"
+          `${backend_url}/api/customers/geographicalDistribution`
         );
 
         if (response.data.success) {
@@ -65,7 +67,7 @@ const GeographicalDistribution = () => {
       return { lat, lng };
     } else {
       console.error(`No results for city: ${city}`);
-      return { lat: 0, lng: 0 }; // Default values 
+      return { lat: 0, lng: 0 }; // Default values
     }
   };
 
@@ -78,27 +80,29 @@ const GeographicalDistribution = () => {
           </h3>
         </div>
         <MapContainer
-      center={[37.7749, -122.4194]}
-      zoom={5}
-      style={{ height: "500px", width: "100%" }}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      {locations.map((location) =>
-        location.lat && location.lng ? (
-          <Marker key={location._id} position={[location.lat, location.lng]}>
-            <Popup>
-              {location._id}: {location.customerCount} customers
-            </Popup>
-          </Marker>
-        ) : null
-      )}
-    </MapContainer>
+          center={[37.7749, -122.4194]}
+          zoom={5}
+          style={{ height: "500px", width: "100%" }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+          {locations.map((location) =>
+            location.lat && location.lng ? (
+              <Marker
+                key={location._id}
+                position={[location.lat, location.lng]}
+              >
+                <Popup>
+                  {location._id}: {location.customerCount} customers
+                </Popup>
+              </Marker>
+            ) : null
+          )}
+        </MapContainer>
       </div>
     </section>
-    
   );
 };
 
