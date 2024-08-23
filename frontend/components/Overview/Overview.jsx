@@ -184,7 +184,7 @@ const Overview = () => {
                 </thead>
                 <tbody>
                   {topProducts.slice(0, 10).map((product) => (
-                    <tr key={product._id}>
+                    <tr key={product.productName}>
                       <td className="border border-gray-300 px-4 py-2 text-center text-sm">
                         {product.productName}
                       </td>
