@@ -44,6 +44,11 @@ app.use("/api/sales", salesRoutes);
 //products routes
 app.use("/api/products", productsRoutes);
 
+// Serve the frontend's index.html for other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
+});
+
 app.listen(process.env.PORT || 3010, () => {
-  console.log(`server is running on port ${process.env.PORT}`);
+  console.log(`server is running on PORT ${process.env.PORT}`);
 });
