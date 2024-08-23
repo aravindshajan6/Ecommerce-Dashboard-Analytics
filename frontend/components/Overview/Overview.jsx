@@ -35,7 +35,7 @@ const Overview = () => {
 
   useEffect(() => {
     // Fetch total sales amount
-    console.log("backedn url ################ : ", backend_url);
+    console.log("backend url ################ : ", backend_url);
     const fetchTotalSalesAmount = async () => {
       try {
         const response = await axios.get(
@@ -192,7 +192,7 @@ const Overview = () => {
                         {product.totalSold}
                       </td>
                       <td className="border border-gray-300 px-4 py-2 text-center  text-sm">
-                        ${product.price}
+                        {product.price} INR
                       </td>
                     </tr>
                   ))}
