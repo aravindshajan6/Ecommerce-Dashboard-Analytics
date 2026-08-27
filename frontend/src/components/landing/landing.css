@@ -1,0 +1,42 @@
+/* Scoped styles for the public landing page (prefixed .nc-). Keyframes only; tokens come from globals.css. */
+
+.nc-marquee {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.nc-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: nc-marquee 42s linear infinite;
+  will-change: transform;
+}
+.nc-marquee:hover .nc-marquee-track { animation-play-state: paused; }
+@keyframes nc-marquee { to { transform: translate3d(-50%, 0, 0); } }
+
+/* Slow float for the hero stat chips / orb caption */
+@keyframes nc-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.nc-float { animation: nc-float 6s ease-in-out infinite; }
+
+/* Fake "live" bar for the order feed visual */
+@keyframes nc-scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } }
+.nc-scan::after {
+  content: ''; position: absolute; inset: 0; width: 40%;
+  background: linear-gradient(90deg, transparent, rgb(var(--teal) / 0.25), transparent);
+  animation: nc-scan 2.6s ease-in-out infinite;
+}
+
+/* Heatmap cells breathe subtly */
+@keyframes nc-breathe { 0%, 100% { opacity: var(--o, 0.5); } 50% { opacity: calc(var(--o, 0.5) * 0.55); } }
+.nc-breathe { animation: nc-breathe 4s ease-in-out infinite; animation-delay: var(--d, 0s); }
+
+/* Globe rings */
+@keyframes nc-orbit { to { transform: rotate(360deg); } }
+.nc-orbit { animation: nc-orbit 14s linear infinite; transform-origin: 50% 50%; }
+.nc-orbit-rev { animation: nc-orbit 22s linear infinite reverse; transform-origin: 50% 50%; }
+
+/* Hero headline lines are masked so they slide up out of nothing */
+.nc-line-mask { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-marquee-track, .nc-float, .nc-scan::after, .nc-breathe, .nc-orbit, .nc-orbit-rev { animation: none !important; }
+}

@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Design tokens (RGB triplets so Tailwind alpha modifiers work) ---------- */
+:root {
+  --bg: 247 247 251;
+  --panel: 255 255 255;
+  --card: 255 255 255;
+  --card-hover: 244 244 250;
+  --line: 15 12 40;
+  --fg: 17 15 36;
+  --fg-2: 82 80 110;
+  --fg-3: 130 128 160;
+  --primary: 79 70 229;
+  --teal: 13 148 136;
+  --pink: 219 39 119;
+  --violet: 124 58 237;
+  --success: 5 150 105;
+  --danger: 225 29 72;
+  --warning: 217 119 6;
+  --glass: 255 255 255;
+  --glass-alpha: 0.72;
+  --line-alpha: 0.08;
+  --aurora-opacity: 0.35;
+  color-scheme: light;
+}
+html.dark {
+  --bg: 5 1 15;
+  --panel: 11 10 26;
+  --card: 17 15 36;
+  --card-hover: 26 24 48;
+  --line: 255 255 255;
+  --fg: 244 242 255;
+  --fg-2: 169 166 196;
+  --fg-3: 107 104 137;
+  --primary: 99 102 241;
+  --teal: 45 212 191;
+  --pink: 236 72 153;
+  --violet: 139 92 246;
+  --success: 52 211 153;
+  --danger: 251 113 133;
+  --warning: 251 191 36;
+  --glass: 17 15 36;
+  --glass-alpha: 0.55;
+  --line-alpha: 0.10;
+  --aurora-opacity: 0.55;
+  color-scheme: dark;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@layer base {
+  * { @apply border-line/10; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    overflow-x: hidden;
+  }
+  ::selection { background: rgb(var(--primary) / 0.35); }
+  h1, h2, h3, h4 { @apply font-display tracking-tight; }
+  .tabular { font-variant-numeric: tabular-nums; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { background: rgb(var(--line) / 0.14); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--line) / 0.26); background-clip: padding-box; border: 3px solid transparent; }
+  button, [role='button'] { @apply outline-none; }
+  :focus-visible { outline: 2px solid rgb(var(--primary) / 0.7); outline-offset: 2px; border-radius: 8px; }
+}
+
+@layer components {
+  /* Aurora backdrop — 4 radial blooms + a slowly drifting conic blur. Text never sits directly on it. */
+  .aurora {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden;
+    background:
+      radial-gradient(60% 50% at 10% 0%, rgb(var(--primary) / 0.35), transparent 60%),
+      radial-gradient(45% 40% at 90% 10%, rgb(var(--teal) / 0.25), transparent 60%),
+      radial-gradient(50% 45% at 80% 90%, rgb(var(--pink) / 0.22), transparent 60%),
+      radial-gradient(40% 40% at 20% 85%, rgb(var(--violet) / 0.25), transparent 60%),
+      rgb(var(--bg));
+  }
+  .aurora::before {
+    content: ''; position: absolute; inset: -20%;
+    background: conic-gradient(from 90deg at 50% 50%, #3a29ff, #2dd4bf, #ec4899, #8b5cf6, #3a29ff);
+    filter: blur(90px) saturate(1.4);
+    opacity: var(--aurora-opacity);
+    animation: drift 18s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .aurora::after {
+    /* subtle grain so gradients don't band */
+    content: ''; position: absolute; inset: 0; opacity: 0.07; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* Glass card with spotlight hover; set --mx/--my (px) from pointermove */
+  .glass {
+    position: relative;
+    background: rgb(var(--glass) / var(--glass-alpha));
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
+    border: 1px solid rgb(var(--line) / var(--line-alpha));
+    border-radius: 20px;
+    box-shadow: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 20px 50px -30px rgb(0 0 0 / 0.6);
+    transition: border-color .3s ease, transform .3s ease, box-shadow .3s ease;
+  }
+  .glass.spot::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--primary) / 0.22), transparent 70%);
+    transition: opacity .35s ease;
+  }
+  .glass.spot:hover::before { opacity: 1; }
+  .glass.spot:hover { border-color: rgb(var(--line) / calc(var(--line-alpha) * 2)); }
+
+  /* Animated conic gradient border (pure CSS via @property) */
+  .gradient-border { position: relative; border-radius: 20px; isolation: isolate; }
+  .gradient-border::after {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; z-index: -1;
+    background: conic-gradient(from var(--angle), rgb(var(--primary)), rgb(var(--teal)), rgb(var(--pink)), rgb(var(--violet)), rgb(var(--primary)));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: angleSpin 6s linear infinite;
+    opacity: .9;
+  }
+
+  .shimmer { position: relative; overflow: hidden; background: rgb(var(--line) / 0.06); }
+  .shimmer::after {
+    content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgb(var(--line) / 0.08), transparent);
+    animation: shimmer 1.4s infinite;
+  }
+
+  .text-gradient {
+    background: linear-gradient(90deg, rgb(var(--primary)), rgb(var(--teal)) 50%, rgb(var(--pink)));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .eyebrow { @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-3; }
+  .kpi-number { @apply font-display font-semibold tabular text-3xl md:text-[2.25rem] leading-none; }
+
+  .pill { @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular; }
+  .btn { @apply inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium transition-all duration-200 active:scale-[0.98]; }
+  .btn-primary { @apply btn bg-primary text-white shadow-glow hover:brightness-110; }
+  .btn-ghost { @apply btn bg-line/5 hover:bg-line/10 text-fg-2 hover:text-fg border border-line/10; }
+  .segmented { @apply inline-flex rounded-xl bg-line/5 border border-line/10 p-1 gap-1; }
+  .segmented > button { @apply rounded-lg px-3 py-1.5 text-xs font-medium text-fg-2 transition-all duration-200; }
+  .segmented > button[data-active='true'] { @apply bg-card text-fg shadow-sm; }
+  .input { @apply w-full rounded-xl bg-line/5 border border-line/10 px-3 py-2 text-sm text-fg placeholder:text-fg-3 focus:border-primary/60 focus:bg-line/[0.07] transition-colors; }
+
+  /* min-w-0 lets the wrapper shrink inside grid/flex parents so wide tables scroll instead of pushing the page. */
+  .table-wrap { @apply overflow-x-auto rounded-2xl min-w-0 max-w-full; }
+  .table { @apply w-full text-sm; }
+  .table th { @apply eyebrow text-left px-4 py-3 border-b border-line/10 whitespace-nowrap; }
+  .table td { @apply px-4 py-3 border-b border-line/[0.06] align-middle whitespace-nowrap; }
+  .table tbody tr { @apply transition-colors; }
+  .table tbody tr:hover { background: rgb(var(--line) / 0.04); }
+
+  .live-dot { @apply relative inline-block h-2 w-2 rounded-full bg-teal; }
+  .live-dot::after { content: ''; @apply absolute inset-0 rounded-full bg-teal animate-pulse-dot; }
+}
+
+/* Leaflet dark map tweaks */
+.leaflet-container { background: rgb(var(--panel)); font-family: inherit; border-radius: 16px; }
+.leaflet-popup-content-wrapper, .leaflet-popup-tip { background: rgb(var(--card)); color: rgb(var(--fg)); box-shadow: 0 10px 30px -10px rgb(0 0 0 / .6); }
+.leaflet-control-attribution { background: rgb(var(--panel) / .7) !important; color: rgb(var(--fg-3)) !important; font-size: 10px; }
+.leaflet-control-attribution a { color: rgb(var(--fg-2)) !important; }
+
+/* Recharts theming hooks */
+.recharts-cartesian-grid line { stroke: rgb(var(--line) / 0.08); }
+.recharts-cartesian-axis-tick-value { fill: rgb(var(--fg-3)); font-size: 11px; }
+.recharts-cartesian-axis line, .recharts-cartesian-axis-line { stroke: rgb(var(--line) / 0.12); }
+.recharts-tooltip-cursor { fill: rgb(var(--line) / 0.05); stroke: rgb(var(--line) / 0.15); }
+.recharts-default-legend { font-size: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .aurora::before { animation: none; }
+}

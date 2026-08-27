@@ -1,0 +1,14 @@
+# Render blueprint — single web service serving the API and the built SPA.
+services:
+  - type: web
+    name: nova-commerce
+    runtime: node
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: MONGODB_URI
+        sync: false   # optional — leave unset to run on the demo dataset
+      - key: OPENCAGE_API_KEY
+        sync: false   # optional — server-side geocoding for unknown cities

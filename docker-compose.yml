@@ -1,0 +1,42 @@
+# Nova Commerce — the web service is the only thing published to the host.
+# The API has no `ports:` mapping, so it is reachable only from inside `novanet`.
+
+services:
+  api:
+    build:
+      context: ./backend
+    image: nova-commerce-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3010"
+      # Leave MONGODB_URI unset to run on the built-in deterministic demo dataset.
+      MONGODB_URI: ${MONGODB_URI:-}
+      OPENCAGE_API_KEY: ${OPENCAGE_API_KEY:-}
+      REFRESH_MINUTES: ${REFRESH_MINUTES:-10}
+      DEMO_SEED: ${DEMO_SEED:-42}
+      # Requests arrive from nginx on the private network, so CORS is not in play.
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    networks:
+      - novanet
+    # Deliberately no `ports:` — the API must not be reachable from the host.
+    expose:
+      - "3010"
+
+  web:
+    build:
+      context: ./frontend
+    image: nova-commerce-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      # The ONLY published port. Override with WEB_PORT=3000 docker compose up.
+      - "${WEB_PORT:-8080}:80"
+    networks:
+      - novanet
+
+networks:
+  novanet:
+    driver: bridge

@@ -1,54 +1,26 @@
-import express from "express";
 import dotenv from "dotenv";
-import { dbConnection } from "./DB/dbConnection.js";
-import customerRoutes from "./routes/customerRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
-import salesRoutes from "./routes/salesRoutes.js";
-import cors from "cors";
-import path from 'path';
-import productsRoutes from "./routes/productRoutes.js";
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-
-const corsOptions = {
-  // origin: ['https://ecommerce-dashboard-a3ap.onrender.com', 'http://localhost:3000'],
-  origin: '*',
-  optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'frontend/build')));
-app.use(express.json());
-
 dotenv.config();
-dbConnection();
 
-app.get("/", (req, res) => {
-  res.status(200).send("Hello World!");
-});
+import { createApp } from "./src/app.js";
+import { init, close } from "./src/data/store.js";
 
-//customer routes
-app.use("/api/customers", customerRoutes);
+const PORT = Number(process.env.PORT) || 3010;
 
-//order routes
-app.use("/api/orders", orderRoutes);
-
-//sales routes
-app.use("/api/sales", salesRoutes);
-
-//products routes
-app.use("/api/products", productsRoutes);
-
-// Serve the frontend's index.html for other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/dist', 'index.html'));
-});
-
-app.listen(process.env.PORT || 3010, () => {
-  console.log(`server is running on PORT ${process.env.PORT}`);
-});
+try {
+  const state = await init();
+  const app = createApp();
+  const server = app.listen(PORT, () => {
+    console.log(`[server] listening on http://localhost:${PORT} (data source: ${state.source})`);
+  });
+  const shutdown = async (signal) => {
+    console.log(`[server] ${signal} received, shutting down`);
+    server.close();
+    await close();
+    process.exit(0);
+  };
+  process.on("SIGINT", () => shutdown("SIGINT"));
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+} catch (err) {
+  console.error("[server] failed to start:", err);
+  process.exit(1);
+}

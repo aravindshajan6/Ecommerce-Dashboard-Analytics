@@ -17,7 +17,7 @@ export default [
         sourceType: 'module',
       },
     },
-    settings: { react: { version: '18.3' } },
+    settings: { react: { version: '19.0' } },
     plugins: {
       react,
       'react-hooks': reactHooks,
@@ -29,6 +29,8 @@ export default [
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
       'react/jsx-no-target-blank': 'off',
+      'react/prop-types': 'off',
+      'react/no-unknown-property': ['error', { ignore: ['args', 'attach', 'position', 'rotation', 'intensity', 'transparent', 'wireframe', 'emissive', 'emissiveIntensity', 'metalness', 'roughness', 'toneMapped', 'vertexColors', 'sizeAttenuation', 'depthWrite', 'blending', 'side', 'object', 'geometry', 'material', 'dispose', 'frustumCulled', 'castShadow', 'receiveShadow', 'scale', 'visible', 'count', 'array', 'itemSize', 'color', 'opacity', 'linewidth', 'map', 'envMapIntensity', 'clearcoat', 'clearcoatRoughness', 'transmission', 'thickness', 'ior', 'distort', 'speed', 'factor', 'penumbra', 'angle', 'decay', 'distance', 'target', 'groundColor', 'fog', 'near', 'far', 'fov', 'makeDefault', 'lookAt', 'up', 'quaternion', 'matrixAutoUpdate', 'renderOrder', 'layers', 'userData'] }],
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
