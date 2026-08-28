@@ -1,5 +1,5 @@
-import { Suspense, lazy } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Suspense, lazy, useEffect, useRef } from 'react';
+import { Navigate, Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
 import AppShell from './components/layout/AppShell.jsx';
 import { useMeta } from './hooks/useApi.js';
 import { setCurrency } from './lib/format.js';
@@ -23,12 +23,32 @@ function PageFallback() {
   );
 }
 
+/**
+ * Resets scroll when moving between sections. Keyed on the first path segment, not the whole
+ * pathname, so opening the order drawer (/orders → /orders/:id) keeps your place in the table.
+ * Back/forward (POP) is left alone so the browser can restore position naturally.
+ */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  const navType = useNavigationType();
+  const section = pathname.split('/')[1] ?? '';
+  const prev = useRef(section);
+
+  useEffect(() => {
+    if (navType !== 'POP' && prev.current !== section) window.scrollTo(0, 0);
+    prev.current = section;
+  }, [section, navType]);
+
+  return null;
+}
+
 export default function App() {
   const { data: meta } = useMeta();
   if (meta?.currency) setCurrency(meta.currency);
 
   return (
     <Suspense fallback={<PageFallback />}>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route element={<AppShell />}>

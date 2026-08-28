@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Boxes, Download, Receipt, ShoppingBag, Undo2 } from 'lucide-react';
 import { ErrorState, GlassCard, KpiCard, PageHeader } from '../components/ui/index.js';
@@ -68,7 +68,13 @@ export default function Orders() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orders.data?.pages]);
 
-  const openOrder = useCallback((row) => navigate({ pathname: `/orders/${encodeURIComponent(row.id)}`, search: qs }), [navigate, qs]);
+  // Capture the scroll offset before navigating: opening the drawer re-renders the page, which
+  // momentarily shortens it and makes the browser clamp scrollY. The drawer restores this on close.
+  const scrollAtOpen = useRef(0);
+  const openOrder = useCallback((row) => {
+    scrollAtOpen.current = window.scrollY;
+    navigate({ pathname: `/orders/${encodeURIComponent(row.id)}`, search: qs });
+  }, [navigate, qs]);
   const closeOrder = useCallback(() => navigate({ pathname: '/orders', search: qs }), [navigate, qs]);
 
   const grid = useReveal(true, { each: 60, y: 14 });
@@ -130,7 +136,7 @@ export default function Orders() {
         </GlassCard>
       </div>
 
-      <OrderDrawer id={id} onClose={closeOrder} />
+      <OrderDrawer id={id} onClose={closeOrder} restoreScrollTo={scrollAtOpen} />
     </>
   );
 }

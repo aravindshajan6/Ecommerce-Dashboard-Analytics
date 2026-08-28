@@ -9,12 +9,12 @@ import { fmtDate, fmtMoney, fmtNumber } from '../../lib/format.js';
 import { orderNo } from './constants.js';
 
 /** Right-hand slide-over for a single order. Rendered in a portal so ancestor transforms can't trap `position: fixed`. */
-export default function OrderDrawer({ id, onClose }) {
+export default function OrderDrawer({ id, onClose, restoreScrollTo }) {
   if (!id) return null;
-  return createPortal(<Panel id={id} onClose={onClose} />, document.body);
+  return createPortal(<Panel id={id} onClose={onClose} restoreScrollTo={restoreScrollTo} />, document.body);
 }
 
-function Panel({ id, onClose }) {
+function Panel({ id, onClose, restoreScrollTo }) {
   const panelRef = useRef(null);
   const backdropRef = useRef(null);
   const closeRef = useRef(null);
@@ -42,11 +42,26 @@ function Panel({ id, onClose }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); requestClose(); } };
     window.addEventListener('keydown', onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    // Pin the body at its current offset while the drawer is open. `overflow: hidden` alone lets the
+    // browser clamp scrollY, so the page silently jumped when the drawer opened and closed.
+    // prefer the offset captured at click time; window.scrollY may already have been clamped
+    const y = restoreScrollTo?.current ?? window.scrollY;
+    const b = document.body.style;
+    const prev = { overflow: b.overflow, position: b.position, top: b.top, width: b.width };
+    b.overflow = 'hidden';
+    b.position = 'fixed';
+    b.top = `-${y}px`;
+    b.width = '100%';
     closeRef.current?.focus();
-    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = prev; };
-  }, [requestClose]);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      b.overflow = prev.overflow;
+      b.position = prev.position;
+      b.top = prev.top;
+      b.width = prev.width;
+      window.scrollTo(0, y);
+    };
+  }, [requestClose, restoreScrollTo]);
 
   const bodyRef = useReveal(!!data, { selector: ':scope > section', each: 60, y: 10, duration: 500 });
 
